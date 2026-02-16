@@ -1,0 +1,4 @@
+/teacher        /teacher/        301
+/student        /student/        301
+/auth           /auth/login.html 301
+/auth/login     /auth/login.html 301
