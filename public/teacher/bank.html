@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QAcademy — Teacher Bank</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <div class="brand-title">QAcademy</div>
+        <div class="brand-sub">Teacher bank</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="btn ghost" href="/teacher/">Dashboard</a>
+      <a class="btn ghost" href="/student/">Student</a>
+      <button class="btn ghost" id="btnSignOut" type="button">Sign out</button>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section class="card">
+      <h1>Question Bank</h1>
+      <p class="muted">Search, filter, and manage your bank items.</p>
+
+      <div class="banner error" id="err" style="display:none;"></div>
+
+      <div class="grid" style="margin-top:12px;">
+        <div class="col-6">
+          <label class="muted">Keyword (q)</label>
+          <input class="input" id="q" placeholder="e.g., meningitis sepsis oxygen" />
+        </div>
+        <div class="col-3">
+          <label class="muted">Status</label>
+          <select id="status" class="input">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="DELETED">DELETED</option>
+            <option value="ALL">ALL</option>
+          </select>
+        </div>
+        <div class="col-3">
+          <label class="muted">Limit</label>
+          <select id="limit" class="input">
+            <option>20</option>
+            <option selected>50</option>
+            <option>100</option>
+            <option>200</option>
+          </select>
+        </div>
+
+        <div class="col-4">
+          <label class="muted">Subject</label>
+          <input class="input" id="subject" placeholder="Exact match (optional)" />
+        </div>
+        <div class="col-4">
+          <label class="muted">Topic</label>
+          <input class="input" id="topic" placeholder="Exact match (optional)" />
+        </div>
+        <div class="col-4">
+          <label class="muted">Difficulty</label>
+          <input class="input" id="difficulty" placeholder="Exact match (optional)" />
+        </div>
+
+        <div class="col-4">
+          <label class="muted">Source Type</label>
+          <input class="input" id="source_type" placeholder="e.g., TEACHER / QUIZ_INLINE" />
+        </div>
+
+        <div class="col-12">
+          <div class="row gap">
+            <button class="btn" id="btnLoad" type="button">Load</button>
+            <button class="btn ghost" id="btnNew" type="button">New item</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row" style="justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div class="muted">Results: <b id="count">0</b></div>
+        <div class="muted"><span class="pill" id="pillState">—</span></div>
+      </div>
+
+      <div style="margin-top:12px; overflow:auto;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Updated</th>
+              <th>Subject</th>
+              <th>Topic</th>
+              <th>Difficulty</th>
+              <th>Stem</th>
+              <th>Correct</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="7" class="muted">No data loaded.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:14px; display:none;" id="editorCard">
+      <h2 id="editorTitle">New Item</h2>
+      <div class="banner error" id="editorErr" style="display:none;"></div>
+
+      <div class="grid" style="margin-top:12px;">
+        <div class="col-12">
+          <label class="muted">Stem *</label>
+          <textarea id="stem" class="input" placeholder="Question stem"></textarea>
+        </div>
+
+        <div class="col-6">
+          <label class="muted">Option A *</label>
+          <textarea id="option_a" class="input"></textarea>
+        </div>
+        <div class="col-6">
+          <label class="muted">Option B *</label>
+          <textarea id="option_b" class="input"></textarea>
+        </div>
+        <div class="col-6">
+          <label class="muted">Option C</label>
+          <textarea id="option_c" class="input"></textarea>
+        </div>
+        <div class="col-6">
+          <label class="muted">Option D</label>
+          <textarea id="option_d" class="input"></textarea>
+        </div>
+        <div class="col-6">
+          <label class="muted">Option E</label>
+          <textarea id="option_e" class="input"></textarea>
+        </div>
+        <div class="col-6">
+          <label class="muted">Option F</label>
+          <textarea id="option_f" class="input"></textarea>
+        </div>
+
+        <div class="col-3">
+          <label class="muted">Correct *</label>
+          <select id="correct" class="input">
+            <option value="">—</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
+          </select>
+        </div>
+        <div class="col-3">
+          <label class="muted">Marks</label>
+          <input id="marks" class="input" placeholder="1" />
+        </div>
+        <div class="col-3">
+          <label class="muted">Difficulty</label>
+          <input id="ed_difficulty" class="input" placeholder="Easy / Moderate / Hard" />
+        </div>
+        <div class="col-3">
+          <label class="muted">Subject</label>
+          <input id="ed_subject" class="input" placeholder="Optional" />
+        </div>
+
+        <div class="col-12">
+          <label class="muted">Topic</label>
+          <input id="ed_topic" class="input" placeholder="Optional" />
+        </div>
+
+        <div class="col-12">
+          <label class="muted">Rationale</label>
+          <textarea id="rationale" class="input" placeholder="Optional"></textarea>
+        </div>
+
+        <div class="col-12">
+          <div class="row gap">
+            <button class="btn" id="btnSave" type="button">Save</button>
+            <button class="btn ghost" id="btnCancel" type="button">Cancel</button>
+            <button class="btn danger" id="btnDelete" type="button" style="display:none;">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" id="bank_item_id" value="" />
+    </section>
+  </main>
+
+  <script src="/assets/app.js"></script>
+  <script>
+    (function(){
+      const $ = (id)=>document.getElementById(id);
+
+      const err = $("err");
+      const tbody = $("tbody");
+      const count = $("count");
+      const pill = $("pillState");
+
+      const editorCard = $("editorCard");
+      const editorTitle = $("editorTitle");
+      const editorErr = $("editorErr");
+
+      const btnLoad = $("btnLoad");
+      const btnNew = $("btnNew");
+      const btnSave = $("btnSave");
+      const btnCancel = $("btnCancel");
+      const btnDelete = $("btnDelete");
+
+      $("btnSignOut").addEventListener("click", QA.signOut);
+
+      function showErr(text){
+        err.style.display = "block";
+        err.textContent = text;
+      }
+      function clearErr(){
+        err.style.display = "none";
+        err.textContent = "";
+      }
+
+      function showEditorError(text){
+        editorErr.style.display = "block";
+        editorErr.textContent = text;
+      }
+      function clearEditorError(){
+        editorErr.style.display = "none";
+        editorErr.textContent = "";
+      }
+
+      function esc(s){
+        return String(s||"")
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
+
+      function trunc(s, n){
+        s = String(s||"").trim();
+        if (s.length <= n) return s;
+        return s.slice(0, n-1) + "…";
+      }
+
+      function openEditor(mode, item){
+        editorCard.style.display = "block";
+        clearEditorError();
+
+        const isEdit = mode === "edit";
+        editorTitle.textContent = isEdit ? "Edit Item" : "New Item";
+        btnDelete.style.display = isEdit ? "inline-flex" : "none";
+
+        $("bank_item_id").value = isEdit ? (item.bank_item_id || "") : "";
+
+        $("stem").value = isEdit ? (item.stem || "") : "";
+        $("option_a").value = isEdit ? (item.option_a || "") : "";
+        $("option_b").value = isEdit ? (item.option_b || "") : "";
+        $("option_c").value = isEdit ? (item.option_c || "") : "";
+        $("option_d").value = isEdit ? (item.option_d || "") : "";
+        $("option_e").value = isEdit ? (item.option_e || "") : "";
+        $("option_f").value = isEdit ? (item.option_f || "") : "";
+
+        $("correct").value = isEdit ? (String(item.correct||"").toUpperCase()) : "";
+        $("marks").value = isEdit ? (item.marks || "") : "1";
+        $("ed_difficulty").value = isEdit ? (item.difficulty || "") : "";
+        $("ed_subject").value = isEdit ? (item.subject || "") : "";
+        $("ed_topic").value = isEdit ? (item.topic || "") : "";
+        $("rationale").value = isEdit ? (item.rationale || "") : "";
+
+        editorCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function closeEditor(){
+        editorCard.style.display = "none";
+        $("bank_item_id").value = "";
+      }
+
+      async function ensureTeacher(){
+        if (!QA.requireTokenOrBridge("/teacher/bank.html")) return false;
+        const vr = await QA.requireTeacherOrRoute();
+        return !!(vr && vr.ok && vr.teacher_ok);
+      }
+
+      async function load(){
+        clearErr();
+        pill.textContent = "Loading…";
+
+        const okTeacher = await ensureTeacher();
+        if (!okTeacher) return;
+
+        const params = {
+          status: ($("status").value || "ACTIVE"),
+          q: ($("q").value || "").trim(),
+          subject: ($("subject").value || "").trim(),
+          topic: ($("topic").value || "").trim(),
+          difficulty: ($("difficulty").value || "").trim(),
+          source_type: ($("source_type").value || "").trim(),
+          limit: ($("limit").value || "50")
+        };
+
+        // remove empty filters (keeps backend happy)
+        Object.keys(params).forEach(k=>{
+          if (params[k] === "") delete params[k];
+        });
+
+        let res = null;
+        try{
+          res = await QA.bankList(params);
+        }catch(e){
+          res = { ok:false, error:String(e && (e.message||e) || e) };
+        }
+
+        if (!res || !res.ok){
+          pill.textContent = "Error";
+          showErr("Load failed: " + (res && (res.error || res.detail) ? (res.error || res.detail) : "unknown"));
+          return;
+        }
+
+        const items = res.items || [];
+        count.textContent = String(items.length);
+        pill.textContent = "Loaded";
+
+        if (!items.length){
+          tbody.innerHTML = "<tr><td colspan='7' class='muted'>No matching items.</td></tr>";
+          return;
+        }
+
+        tbody.innerHTML = items.map(it => `
+          <tr>
+            <td>${esc(it.updated_at || "")}</td>
+            <td>${esc(it.subject || "")}</td>
+            <td>${esc(it.topic || "")}</td>
+            <td><span class="pill">${esc(it.difficulty || "")}</span></td>
+            <td>${esc(trunc(it.stem || "", 110))}</td>
+            <td><b>${esc(it.correct || "")}</b></td>
+            <td>
+              <div class="actions">
+                <button class="btn ghost" data-act="view" data-id="${esc(it.bank_item_id)}" type="button">View/Edit</button>
+                <button class="btn danger" data-act="del" data-id="${esc(it.bank_item_id)}" type="button">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `).join("");
+
+        // wire actions
+        tbody.querySelectorAll("button[data-act]").forEach(btn=>{
+          btn.addEventListener("click", async function(){
+            const act = btn.getAttribute("data-act");
+            const id = btn.getAttribute("data-id");
+
+            if (act === "view"){
+              const okTeacher2 = await ensureTeacher();
+              if (!okTeacher2) return;
+
+              const g = await QA.bankGet(id);
+              if (!g || !g.ok || !g.item){
+                return showErr("Could not load item: " + (g && (g.error||g.detail) ? (g.error||g.detail) : "unknown"));
+              }
+              openEditor("edit", g.item);
+            }
+
+            if (act === "del"){
+              if (!confirm("Delete this item?")) return;
+
+              const okTeacher2 = await ensureTeacher();
+              if (!okTeacher2) return;
+
+              const d = await QA.bankDelete(id);
+              if (!d || !d.ok){
+                return showErr("Delete failed: " + (d && (d.error||d.detail) ? (d.error||d.detail) : "unknown"));
+              }
+              await load();
+            }
+          });
+        });
+      }
+
+      btnLoad.addEventListener("click", load);
+
+      btnNew.addEventListener("click", async function(){
+        const okTeacher = await ensureTeacher();
+        if (!okTeacher) return;
+        openEditor("new", {});
+      });
+
+      btnCancel.addEventListener("click", closeEditor);
+
+      btnSave.addEventListener("click", async function(){
+        clearEditorError();
+
+        const okTeacher = await ensureTeacher();
+        if (!okTeacher) return;
+
+        const bank_item_id = ($("bank_item_id").value || "").trim();
+
+        const fields = {
+          stem: ($("stem").value || "").trim(),
+          option_a: ($("option_a").value || "").trim(),
+          option_b: ($("option_b").value || "").trim(),
+          option_c: ($("option_c").value || "").trim(),
+          option_d: ($("option_d").value || "").trim(),
+          option_e: ($("option_e").value || "").trim(),
+          option_f: ($("option_f").value || "").trim(),
+          correct: ($("correct").value || "").trim(),
+          rationale: ($("rationale").value || "").trim(),
+          marks: ($("marks").value || "").trim(),
+          difficulty: ($("ed_difficulty").value || "").trim(),
+          subject: ($("ed_subject").value || "").trim(),
+          topic: ($("ed_topic").value || "").trim(),
+          source_type: "TEACHER"
+        };
+
+        if (!fields.stem) return showEditorError("Stem is required.");
+        if (!fields.option_a || !fields.option_b) return showEditorError("Option A and B are required.");
+        if (!fields.correct) return showEditorError("Correct option is required (A–F).");
+
+        // remove blanks so update won’t wipe unintentionally
+        Object.keys(fields).forEach(k=>{
+          if (fields[k] === "") delete fields[k];
+        });
+
+        let res = null;
+        try{
+          if (bank_item_id){
+            res = await QA.bankUpdate(Object.assign({ bank_item_id }, fields));
+          } else {
+            res = await QA.bankCreate(fields);
+          }
+        }catch(e){
+          res = { ok:false, error:String(e && (e.message||e) || e) };
+        }
+
+        if (!res || !res.ok){
+          return showEditorError("Save failed: " + (res && (res.error||res.detail) ? (res.error||res.detail) : "unknown"));
+        }
+
+        closeEditor();
+        await load();
+      });
+
+      btnDelete.addEventListener("click", async function(){
+        const bank_item_id = ($("bank_item_id").value || "").trim();
+        if (!bank_item_id) return;
+
+        if (!confirm("Delete this item?")) return;
+
+        const okTeacher = await ensureTeacher();
+        if (!okTeacher) return;
+
+        const d = await QA.bankDelete(bank_item_id);
+        if (!d || !d.ok){
+          return showEditorError("Delete failed: " + (d && (d.error||d.detail) ? (d.error||d.detail) : "unknown"));
+        }
+        closeEditor();
+        await load();
+      });
+
+      // auto-load on open
+      (async function init(){
+        const okTeacher = await ensureTeacher();
+        if (!okTeacher) return;
+        await load();
+      })();
+    })();
+  </script>
+</body>
+</html>
