@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QAcademy — Student</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <div class="brand-title">QAcademy</div>
+        <div class="brand-sub">Student dashboard</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="btn ghost" href="/">Home</a>
+      <a class="btn ghost" href="/teacher/">Teacher</a>
+      <button class="btn ghost" id="btnSignOut" type="button">Sign out</button>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section class="card">
+      <h1>Student</h1>
+      <p class="muted">
+        You’re here because you’re not a verified/approved teacher (or you’re using a student account).
+      </p>
+
+      <div class="banner" id="state">Checking token…</div>
+
+      <div class="divider"></div>
+
+      <div class="note">
+        If you expected Teacher access, make sure:
+        <ul style="margin:8px 0 0 18px;">
+          <li>Your Portal role is <b>ADMIN</b> or <b>MODERATOR</b></li>
+          <li>You exist in <code>teachers</code> tab and <code>active=TRUE</code></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/app.js"></script>
+  <script>
+    (function(){
+      document.getElementById('btnSignOut').addEventListener('click', QA.signOut);
+
+      (async function(){
+        const tok = QA.getToken();
+        const state = document.getElementById('state');
+
+        if (!tok){
+          state.textContent = "No token on this domain. Open via Portal/Blogger Teacher Access handoff.";
+          return;
+        }
+
+        // Optional: if token is actually a teacher, route them up.
+        const vr = await QA.teacherVerify(tok);
+        if (vr && vr.ok && vr.teacher_ok) {
+          state.textContent = "Teacher detected. Routing…";
+          location.href = "/teacher/";
+          return;
+        }
+
+        state.textContent = "Signed in on this domain ✓";
+      })();
+    })();
+  </script>
+</body>
+</html>
