@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QAcademy — Teacher Access</title>
+  <link rel="stylesheet" href="/assets/app.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <div class="brand-title">QAcademy</div>
+        <div class="brand-sub">Teacher Access (DEV)</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn ghost" id="btnSignOut" type="button">Sign out</button>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section class="card">
+      <h1>Teacher Access</h1>
+      <p class="muted">
+        This site can’t read your Portal/Blogger token directly. You must enter via the Teacher Access handoff.
+      </p>
+
+      <div class="row gap">
+        <button class="btn" id="btnGo" type="button">Continue (auto-route)</button>
+        <a class="btn ghost" href="/auth/login.html">Open login bridge</a>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="kv">
+        <div class="k">Token (qa_token)</div>
+        <div class="v" id="tokState">Checking…</div>
+      </div>
+      <div class="kv">
+        <div class="k">Backend</div>
+        <div class="v" id="backendState">—</div>
+      </div>
+
+      <div class="note">
+        If you opened this site directly, go back to your Portal/Blogger and click <b>Teacher Access</b> so it can handoff.
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/app.js"></script>
+  <script>
+    (function(){
+      const tok = QA.getToken();
+      document.getElementById('tokState').textContent = tok ? ('Present (' + tok.slice(0, 10) + '…)') : 'Missing';
+
+      document.getElementById('backendState').textContent = QA.BACKEND_URL;
+
+      document.getElementById('btnSignOut').addEventListener('click', function(){
+        QA.signOut();
+      });
+
+      document.getElementById('btnGo').addEventListener('click', async function(){
+        await QA.routeByRole({ preferReturnTo: null });
+      });
+    })();
+  </script>
+</body>
+</html>
